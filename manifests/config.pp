@@ -55,6 +55,7 @@ class openstack::config (
   $neutron_password = undef,
   $neutron_shared_secret = undef,
   $neutron_core_plugin = 'neutron.plugins.ml2.plugin.Ml2Plugin',
+  $neutron_external_bridge = 'brex',
   $neutron_service_plugins = [
   'neutron.services.l3_router.l3_router_plugin.L3RouterPlugin',
   'neutron.services.loadbalancer.plugin.LoadBalancerPlugin',

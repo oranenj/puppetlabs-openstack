@@ -4,6 +4,8 @@ class openstack::profile::neutron::router {
     value     => '1',
   }
 
+  $external_bridge = $::openstack::config::neutron_external_bridge
+
   $controller_management_address = $::openstack::config::controller_address_management
 
   include ::openstack::common::neutron
@@ -13,7 +15,7 @@ class openstack::profile::neutron::router {
   ### Router service installation
   class { '::neutron::agents::l3':
     debug                   => $::openstack::config::debug,
-    external_network_bridge => 'brex',
+    external_network_bridge => $external_bridge,
     enabled                 => true,
   }
 
@@ -49,12 +51,17 @@ class openstack::profile::neutron::router {
     enabled => true,
   }
 
-  $external_bridge = 'brex'
   $external_network = $::openstack::config::network_external
   $external_device = device_for_network($external_network)
+
+  if (!$external_device) {
+    fail ("Device not found for external network '$external_network'")
+  }
+
   vs_bridge { $external_bridge:
     ensure => present,
   }
+
   if $external_device != $external_bridge {
     vs_port { $external_device:
       ensure => present,
