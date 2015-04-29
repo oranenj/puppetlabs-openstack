@@ -1,5 +1,7 @@
 # The base profile for OpenStack. Installs the repository and ntp
-class openstack::profile::base {
+class openstack::profile::base (
+  $repo_class = '::openstack::resources::repo'
+) {
   # make sure the parameters are initialized
   include ::openstack
 
@@ -7,7 +9,7 @@ class openstack::profile::base {
   include ::ntp
 
   # all nodes need the OpenStack repository
-  class { '::openstack::resources::repo': }
+  class { $repo_class: }
 
   # database anchor
   anchor { 'database-service': }
